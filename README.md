@@ -210,19 +210,47 @@ We advise you to use `vLLM>=0.4.0` to build OpenAI-compatible API service. Start
 python -m vllm.entrypoints.openai.api_server --served-model-name Qwen2-7B-Instruct --model Qwen/Qwen2-7B-Instruct 
 ```
 
+```bash
+python -m vllm.entrypoints.openai.api_server --served-model-name Qwen2-72B-Instruct-AWQ --model /home/ec2-user/SageMaker/efs/Models/Qwen2-72B-Instruct-AWQ --tensor-parallel-size 4
+```
+
+```bash
+python -m vllm.entrypoints.openai.api_server --served-model-name Qwen2-72B-Instruct --model /home/ec2-user/SageMaker/efs/Models/Qwen2-72B-Instruct --tensor-parallel-size 8 --gpu-memory-utilization 0.8
+```
+
+```bash
+python examples/demo/web_demo.py -c /home/ec2-user/SageMaker/efs/Models/Qwen2-72B-Instruct-AWQ --share
+```
+
 Then use the chat API as demonstrated below:
 
 ```shell
 curl http://localhost:8000/v1/chat/completions \
     -H "Content-Type: application/json" \
     -d '{
-    "model": "Qwen2-7B-Instruct",
+    "model": "Qwen2-72B-Instruct-AWQ",
     "messages": [
     {"role": "system", "content": "You are a helpful assistant."},
     {"role": "user", "content": "Tell me something about large language models."}
     ]
     }'
 ```
+
+```bash
+curl -X POST https://runtime.sagemaker.us-west-2.amazonaws.com/endpoints/lmi-model-2024-06-11-09-18-56-099/invocations \
+  -H 'Content-Type: application/json' \
+  -d '
+    {
+        "inputs" : "What is Deep Learning?", 
+        "parameters" : {
+            "do_sample": true,
+            "max_new_tokens": 256,
+            "details": true,
+        },
+        "stream": true, 
+    }'
+```
+
 ```python
 from openai import OpenAI
 # Set OpenAI's API key and API base to use vLLM's API server.
@@ -242,6 +270,17 @@ chat_response = client.chat.completions.create(
     ]
 )
 print("Chat response:", chat_response)
+```
+
+```bash
+python examples/demo/openai_chatbot.py --model-url http://localhost:8000/v1 \
+                              --model Qwen2-72B-Instruct-AWQ
+
+```
+
+```
+
+
 ```
 
 ### SGLang

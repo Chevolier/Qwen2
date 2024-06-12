@@ -2,3 +2,10 @@
 docs/_build/
 docs/build/
 docs/**/*.mo
+.ipynb_checkpoints/
+data/
+outputs/
+output/
+logs/
+log/
+
