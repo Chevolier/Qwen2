@@ -211,7 +211,11 @@ python -m vllm.entrypoints.openai.api_server --served-model-name Qwen2-7B-Instru
 ```
 
 ```bash
-python -m vllm.entrypoints.openai.api_server --served-model-name Qwen2-72B-Instruct-AWQ --model /home/ec2-user/SageMaker/efs/Models/Qwen2-72B-Instruct-AWQ --tensor-parallel-size 4
+CUDA_VISIBLE_DEVICES=4,5,6,7 nohup python -m vllm.entrypoints.openai.api_server --served-model-name Qwen2-72B-Instruct-AWQ --model /home/ec2-user/SageMaker/efs/Models/Qwen2-72B-Instruct-AWQ --tensor-parallel-size 4 --gpu-memory-utilization 0.8 --port 8010 > log.out 2>&1 &
+```
+
+```bash
+CUDA_VISIBLE_DEVICES=0,1,2,3 nohup python -m vllm.entrypoints.openai.api_server --served-model-name Meta-Llama-3-70B-Instruct-AWQ --model /home/ec2-user/SageMaker/efs/Models/Meta-Llama-3-70B-Instruct-AWQ --tensor-parallel-size 4 --gpu-memory-utilization 0.8 > log_llama.out 2>&1 &
 ```
 
 ```bash
